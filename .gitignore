@@ -3,4 +3,5 @@
 /tests/Support/_generated
 /.env
 /src
+/update
 /tests/_output

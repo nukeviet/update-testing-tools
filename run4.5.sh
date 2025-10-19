@@ -68,14 +68,6 @@ if ! kill -0 $SELENIUM_PID 2>/dev/null; then
   fi
 fi
 
-# Lấy NukeViet về thư mục src
-if [ ! -d "$DIR_PATH/src" ]; then
-  echo "Cloning NukeViet repository..."
-  mkdir -p "$DIR_PATH/src"
-  cd "$DIR_PATH/src"
-  git clone https://github.com/nukeviet/nukeviet.git .
-fi
-
 VERSIONS=(
   "3f966cf9426555e6863a985ed91e4ee5509be51e" # 4.5.00
   "e0606d556b63fb03b73bf5572264f6f8648fae59" # 4.5.01
@@ -97,6 +89,36 @@ VERSIONS_NAME=(
   "latest"
 )
 LASTESTVERSION="nukeviet4.5"
+LASTESTUPDATEVERSION="to-4.5.07"
+
+# Lấy NukeViet về thư mục src
+if [ ! -d "$DIR_PATH/src" ]; then
+  echo "Cloning NukeViet repository..."
+  mkdir -p "$DIR_PATH/src"
+  cd "$DIR_PATH/src"
+  git clone https://github.com/nukeviet/nukeviet.git .
+else
+  cd "$DIR_PATH/src"
+  git reset --hard HEAD
+  git clean -dfx
+  git checkout "$LASTESTVERSION"
+  git pull
+fi
+
+# Lấy gói cập nhật về thư mục update
+if [ ! -d "$DIR_PATH/update" ]; then
+  echo "Cloning NukeViet update repository..."
+  mkdir -p "$DIR_PATH/update"
+  cd "$DIR_PATH/update"
+  git clone https://github.com/nukeviet/update.git .
+  git checkout "$LASTESTUPDATEVERSION"
+else
+  cd "$DIR_PATH/update"
+  git reset --hard HEAD
+  git clean -dfx
+  git checkout "$LASTESTUPDATEVERSION"
+  git pull
+fi
 
 for i in "${!VERSIONS[@]}"; do
   commitid="${VERSIONS[$i]}"
@@ -107,6 +129,7 @@ for i in "${!VERSIONS[@]}"; do
   echo "=============================="
   echo ""
 
+  # Làm sạch thư mục code và checkout về phiên bản tương ứng
   cd "$DIR_PATH/src"
   git reset --hard HEAD
   git clean -dfx
@@ -121,15 +144,39 @@ for i in "${!VERSIONS[@]}"; do
     exit $code
   fi
 
+  # Cài đặt website
   cd "$DIR_PATH"
-  echo "Begin test..."
-  php $DIR_PATH/vendor/bin/codecept run
+  echo "Begin installation..."
+  php $DIR_PATH/vendor/bin/codecept run -g install
   code=$?
   if [[ $code -gt 0 ]]; then
     echo "Tests failed with code: $code on version $version_name"
     read -p "Error! Press any key to continue..."
     exit $code
   fi
+
+  # Test cập nhật phiên bản
+  cp -rf "$DIR_PATH/update/install" "$DIR_PATH/src/"
+  echo "Begin update testing..."
+  php $DIR_PATH/vendor/bin/codecept run -g update
+  code=$?
+  if [[ $code -gt 0 ]]; then
+    echo "Tests failed with code: $code on version $version_name"
+    read -p "Error! Press any key to continue..."
+    exit $code
+  fi
+
+  # Kiểm tra lại sau cập nhật
+  echo "Begin verify testing..."
+  php $DIR_PATH/vendor/bin/codecept run -g verify
+  code=$?
+  if [[ $code -gt 0 ]]; then
+    echo "Tests failed with code: $code on version $version_name"
+    read -p "Error! Press any key to continue..."
+    exit $code
+  fi
+
+  echo "Tests passed on version $version_name"
 done
 
 read -p "Finish! Press any key to continue..."
