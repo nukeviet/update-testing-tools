@@ -28,3 +28,7 @@ Chuẩn bị Selenium server:
 npm install selenium-standalone -g
 selenium-standalone install
 ```
+
+**Kiểm thử**
+
+Chạy `bash run4.5.sh` chờ nó kiểm thử nếu không có lỗi nào khiến nó dừng lại là quá trình hoàn tất. Nếu có lỗi gì nó dừng lại thì kiểm tra và sửa.
