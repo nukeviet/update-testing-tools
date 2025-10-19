@@ -1,0 +1,6 @@
+/vendor
+/composer.lock
+/tests/Support/_generated
+/.env
+/src
+/tests/_output
