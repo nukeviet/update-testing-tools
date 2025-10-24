@@ -76,7 +76,7 @@ VERSIONS=(
   "b43102f5829c0e5b5613d46a96f983f87a22aec6" # 4.5.04
   "fdf0e407808a6d96704bb1799e9bc9474de97514" # 4.5.05
   "c7580dbd4433aed886f714f187d90cb3707886fb" # 4.5.06
-  "head"                                     # latest
+  # "head"                                     # latest
 )
 VERSIONS_NAME=(
   "4.5.00"
