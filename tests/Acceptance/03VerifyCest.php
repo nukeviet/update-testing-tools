@@ -66,5 +66,11 @@ class VerifyCest
         ]);
         Assert::assertNotEmpty($configValue, 'Dòng nv_csp không tồn tại trong nv4_config');
         Assert::assertStringContainsString('*.ckeditor.com', $configValue, 'config_value không chứa *.ckeditor.com');
+
+        // Kiểm tra bảng nv4_authors_module, dòng module=zalo cột act_2 phải bằng 1
+        $act2Value = $I->grabFromDatabase('nv4_authors_module', 'act_2', [
+            'module' => 'zalo'
+        ]);
+        Assert::assertEquals(1, $act2Value, 'Cột act_2 của module zalo không bằng 1');
     }
 }
