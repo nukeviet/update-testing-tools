@@ -67,6 +67,15 @@ class VerifyCest
         Assert::assertNotEmpty($configValue, 'Dòng nv_csp không tồn tại trong nv4_config');
         Assert::assertStringContainsString('*.ckeditor.com', $configValue, 'config_value không chứa *.ckeditor.com');
 
+        // Kiểm tra cdn.plyr.io trong CSP
+        $configValue = $I->grabFromDatabase('nv4_config', 'config_value', [
+            'lang'        => 'sys',
+            'module'      => 'site',
+            'config_name' => 'nv_csp'
+        ]);
+        Assert::assertNotEmpty($configValue, 'Dòng nv_csp không tồn tại trong nv4_config');
+        Assert::assertStringContainsString('cdn.plyr.io', $configValue, 'config_value không chứa cdn.plyr.io');
+
         // Kiểm tra bảng nv4_authors_module, dòng module=zalo cột act_2 phải bằng 1
         $act2Value = $I->grabFromDatabase('nv4_authors_module', 'act_2', [
             'module' => 'zalo'
