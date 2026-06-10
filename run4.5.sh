@@ -77,6 +77,7 @@ VERSIONS=(
   "fdf0e407808a6d96704bb1799e9bc9474de97514" # 4.5.05
   "c7580dbd4433aed886f714f187d90cb3707886fb" # 4.5.06
   "98fa26decb267c5899d5ead4b74b24df3322f50c" # 4.5.07
+  "a91103d349c2c9405ba6a05df106dfadd5b46b5d" # 4.5.08
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
@@ -88,10 +89,11 @@ VERSIONS_NAME=(
   "4.5.05"
   "4.5.06"
   "4.5.07"
+  "4.5.08"
   "latest"
 )
 LASTESTVERSION="nukeviet4.5"
-LASTESTUPDATEVERSION="to-4.5.08"
+LASTESTUPDATEVERSION="to-4.5.09"
 
 # Lấy NukeViet về thư mục src
 if [ ! -d "$DIR_PATH/src" ]; then
@@ -181,4 +183,4 @@ for i in "${!VERSIONS[@]}"; do
   echo "Tests passed on version $version_name"
 done
 
-read -p "Finish! Press any key to continue..."
+read -p "Finish All steps! Press any key to continue..."

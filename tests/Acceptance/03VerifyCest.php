@@ -81,5 +81,62 @@ class VerifyCest
             'module' => 'zalo'
         ]);
         Assert::assertEquals(1, $act2Value, 'Cột act_2 của module zalo không bằng 1');
+
+        // Kiểm tra các config instant_articles đã bị xóa khỏi nv4_config
+        $instantArticlesConfigs = [
+            'instant_articles_active',
+            'instant_articles_template',
+            'instant_articles_httpauth',
+            'instant_articles_username',
+            'instant_articles_password',
+            'instant_articles_livetime',
+            'instant_articles_gettime',
+            'instant_articles_auto',
+        ];
+        foreach ($instantArticlesConfigs as $configName) {
+            $I->dontSeeInDatabase('nv4_config', [
+                'lang'        => 'vi',
+                'module'      => 'news',
+                'config_name' => $configName,
+            ]);
+        }
+
+        // Kiểm tra các cột instant_* đã bị xóa khỏi bảng nv4_vi_news_row_histories
+        $instantColumns = ['instant_active', 'instant_template', 'instant_creatauto'];
+        foreach ($instantColumns as $columnName) {
+            $result = $I->grabFromDatabase('information_schema.columns', 'COUNT(*)', [
+                'table_schema' => $_ENV['DB_NAME'],
+                'table_name'   => 'nv4_vi_news_row_histories',
+                'column_name'  => $columnName,
+            ]);
+            Assert::assertEquals(0, $result, "Bảng nv4_vi_news_row_histories vẫn còn cột {$columnName}!");
+        }
+
+        // Kiểm tra func instant-rss của module news đã bị xóa khỏi nv4_vi_modfuncs
+        $I->dontSeeInDatabase('nv4_vi_modfuncs', [
+            'func_name' => 'instant-rss',
+            'in_module' => 'news',
+        ]);
+
+        // Kiểm tra các cột instant_* đã bị xóa khỏi bảng nv4_vi_news_rows
+        $instantColumns = ['instant_active', 'instant_template', 'instant_creatauto'];
+        foreach ($instantColumns as $columnName) {
+            $result = $I->grabFromDatabase('information_schema.columns', 'COUNT(*)', [
+                'table_schema' => $_ENV['DB_NAME'],
+                'table_name'   => 'nv4_vi_news_rows',
+                'column_name'  => $columnName,
+            ]);
+            Assert::assertEquals(0, $result, "Bảng nv4_vi_news_rows vẫn còn cột {$columnName}!");
+        }
+
+        // Kiểm tra các cột instant_* đã bị xóa khỏi bảng nv4_vi_news_1 (đại diện bảng cat)
+        foreach ($instantColumns as $columnName) {
+            $result = $I->grabFromDatabase('information_schema.columns', 'COUNT(*)', [
+                'table_schema' => $_ENV['DB_NAME'],
+                'table_name'   => 'nv4_vi_news_1',
+                'column_name'  => $columnName,
+            ]);
+            Assert::assertEquals(0, $result, "Bảng nv4_vi_news_1 vẫn còn cột {$columnName}!");
+        }
     }
 }
