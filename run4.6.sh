@@ -94,8 +94,8 @@ VERSIONS_NAME=(
   "4.5.09"
   "latest"
 )
-LASTESTVERSION="nukeviet4.5"
-LASTESTUPDATEVERSION="to-4.5.10"
+LASTESTVERSION="nukeviet4.6"
+LASTESTUPDATEVERSION="to-4.6.00"
 
 # Lấy NukeViet về thư mục src
 if [ ! -d "$DIR_PATH/src" ]; then
