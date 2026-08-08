@@ -69,33 +69,15 @@ if ! kill -0 $SELENIUM_PID 2>/dev/null; then
 fi
 
 VERSIONS=(
-  "3f966cf9426555e6863a985ed91e4ee5509be51e" # 4.5.00
-  "e0606d556b63fb03b73bf5572264f6f8648fae59" # 4.5.01
-  "1f328bb8cd256f88bd45fc3ec5a50ae951da2501" # 4.5.02
-  "222a560cf5d051f8ea5c301c6b0ffc215122cbea" # 4.5.03
-  "b43102f5829c0e5b5613d46a96f983f87a22aec6" # 4.5.04
-  "fdf0e407808a6d96704bb1799e9bc9474de97514" # 4.5.05
-  "c7580dbd4433aed886f714f187d90cb3707886fb" # 4.5.06
-  "98fa26decb267c5899d5ead4b74b24df3322f50c" # 4.5.07
-  "a91103d349c2c9405ba6a05df106dfadd5b46b5d" # 4.5.08
-  "47b5383017725354a824db30f754def60109f5a5" # 4.5.09
+  "f47de5cd6577d0d49449754be9bafe9081be4981" # 4.6.00
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
-  "4.5.00"
-  "4.5.01"
-  "4.5.02"
-  "4.5.03"
-  "4.5.04"
-  "4.5.05"
-  "4.5.06"
-  "4.5.07"
-  "4.5.08"
-  "4.5.09"
+  "4.6.00"
   "latest"
 )
 LASTESTVERSION="nukeviet4.6"
-LASTESTUPDATEVERSION="to-4.6.00"
+LASTESTUPDATEVERSION="to-4.6.01"
 
 # Lấy NukeViet về thư mục src
 if [ ! -d "$DIR_PATH/src" ]; then
@@ -174,7 +156,7 @@ for i in "${!VERSIONS[@]}"; do
 
   # Kiểm tra lại sau cập nhật
   echo "Begin verify testing..."
-  php $DIR_PATH/vendor/bin/codecept run -g verify
+  php $DIR_PATH/vendor/bin/codecept run -g verify4.6
   code=$?
   if [[ $code -gt 0 ]]; then
     echo "Tests failed with code: $code on version $version_name"

@@ -43,37 +43,65 @@ class UpdateCest
         $I->see('Thực hiện cập nhật');
         $I->click('Thực hiện cập nhật');
 
+        // Click sang bước thông tin sao lưu
         $I->waitForText('Các bước kiểm tra gói cập nhật và kiểm tra tương thích phiên bản đã hoàn tất, bạn có thể thực hiện cập nhật lên phiên bản mới', 5);
         $I->click('Bước kế tiếp');
 
+        // Click sang bước xem danh sách công việc CSDL + File
         $I->waitForText('Bạn cũng có thể bỏ qua bước này và thực hiện bước tiếp theo', 5);
         $I->click('Bước kế tiếp');
 
+        // Click sang bước thực hiện cập nhật CSDL
         $I->waitForText('Bên dưới là danh sách các công việc sẽ thực hiện', 5);
         $I->click('Bước kế tiếp');
 
+        // Click bắt đầu cập nhật CSDL
         $I->waitForText('Bắt đầu', 5);
         $I->click('Bắt đầu');
 
+        // Click sang bước thực hiện di chuyển file
         $I->waitForText('Bước kế tiếp', 60);
         $I->click('Bước kế tiếp');
 
+        // Click bắt đầu di chuyển file
         $I->waitForText('Nhấp vào đây để tiếp tục', 5);
         $I->click('Nhấp vào đây để tiếp tục');
 
+        // Click sang bước cuối cùng
         $I->waitForText('Bước kế tiếp', 60);
         $I->click('Bước kế tiếp');
 
         /**
-         * Đợi text "Các bước thực hiện đã hoàn tất" xuất hiện trong 5s
-         * quá thời điểm mà có text "Website tạm ngưng hoạt động" xuất hiện
-         * Thì thực hiện lại 'update' một lần nữa
+         * Nếu có những dòng chữ này thì thành công, xóa gói cập nhật
+         * Nếu không thì bắt đầu quy trình reUpdate
          */
-        try {
-            $I->waitForText('Các bước thực hiện đã hoàn tất', 2);
-        } catch (\Throwable $e) {
-            $this->reUpdate($I);
+        $arrayTryText = [
+            // 'Các bước thực hiện đã hoàn tất',
+            'Nâng cấp thành công, dưới đây là những thông tin bạn cần lưu ý',
+        ];
+        $tryOffset = 0;
+        $countTry = count($arrayTryText);
+        while ($tryOffset < $countTry) {
+            try {
+                // Đợi thông báo thành công
+                $I->waitForText($arrayTryText[$tryOffset], 5);
+
+                // Click nút xóa gói cập nhật
+                $I->click('Xóa gói cập nhật');
+
+                // Alert của javascript bật lên hỏi "Bạn thực sự muốn xóa" thì click ok
+                $I->acceptPopup();
+
+                // Có chữ "Gói cập nhật đã được xóa khỏi hệ thống thành công" thì coi như thành công
+                $I->waitForText('Gói cập nhật đã được xóa khỏi hệ thống thành công', 5);
+                return;
+            } catch (\Throwable $e) {
+                $tryOffset++;
+            }
         }
+
+        // Bị tạm ngừng hoạt động thì cập nhật lại từ bước login admin
+        $this->reUpdate($I);
     }
 
     // Xử lý riêng trường hợp bị out ra tại bản 4.5.09 do luật cookie thay đổi

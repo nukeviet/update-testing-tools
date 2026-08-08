@@ -23,7 +23,7 @@ class VerifyCest
     /**
      * @param AcceptanceTester $I
      *
-     * @group verify
+     * @group verify4.5
      */
     // public function login(AcceptanceTester $I)
     // {
@@ -33,7 +33,7 @@ class VerifyCest
     /**
      * @param AcceptanceTester $I
      *
-     * @group verify
+     * @group verify4.5
      */
     public function verify(AcceptanceTester $I)
     {

@@ -174,7 +174,7 @@ for i in "${!VERSIONS[@]}"; do
 
   # Kiểm tra lại sau cập nhật
   echo "Begin verify testing..."
-  php $DIR_PATH/vendor/bin/codecept run -g verify
+  php $DIR_PATH/vendor/bin/codecept run -g verify4.5
   code=$?
   if [[ $code -gt 0 ]]; then
     echo "Tests failed with code: $code on version $version_name"
