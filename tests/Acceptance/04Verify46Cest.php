@@ -57,5 +57,16 @@ class Verify46Cest
             'module'      => 'global',
             'config_name' => 'trusted_proxies'
         ]);
+
+        // Dòng config_name=nv_csp, module=site, lang=sys phải có
+        // config_value chứa chuỗi " nukeviet.vn" và  " *.nukeviet.vn"
+        $configValue = $I->grabFromDatabase('nv4_config', 'config_value', [
+            'lang'        => 'sys',
+            'module'      => 'site',
+            'config_name' => 'nv_csp'
+        ]);
+        Assert::assertNotEmpty($configValue, 'Dòng nv_csp không tồn tại trong nv4_config');
+        Assert::assertStringContainsString(' nukeviet.vn', $configValue, 'config_value không chứa " nukeviet.vn"');
+        Assert::assertStringContainsString(' *.nukeviet.vn', $configValue, 'config_value không chứa " *.nukeviet.vn"');
     }
 }
