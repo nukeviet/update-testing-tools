@@ -57,6 +57,27 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * Cuộn phần tử vào giữa vùng nhìn thấy rồi mới click
+     *
+     * Selenium chỉ tự cuộn theo cửa sổ trình duyệt nên phần tử nằm ngoài
+     * vùng nhìn thấy của một khối có thanh cuộn riêng (overflow: auto) sẽ
+     * không click được
+     *
+     * @param string $cssSelector
+     * @param int $timeout
+     * @return void
+     */
+    public function scrollIntoViewAndClick(string $cssSelector, int $timeout = 10)
+    {
+        $I = $this;
+
+        $I->waitForElementVisible($cssSelector, $timeout);
+        $I->executeJS('document.querySelector(arguments[0]).scrollIntoView({block: "center", inline: "nearest"});', [$cssSelector]);
+        $I->waitForElementClickable($cssSelector, $timeout);
+        $I->click($cssSelector);
+    }
+
+    /**
      * @return string
      */
     public function getDomain()

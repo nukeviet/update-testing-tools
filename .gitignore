@@ -3,5 +3,6 @@
 /tests/Support/_generated
 /.env
 /src
+/src-module
 /update
 /tests/_output
