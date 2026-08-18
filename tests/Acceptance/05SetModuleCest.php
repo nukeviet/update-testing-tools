@@ -84,4 +84,15 @@ class SetModuleCest
     {
         $this->installModule($I, 'laws');
     }
+
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install-module-organs
+     * @group all
+     */
+    public function installModuleOrgans(AcceptanceTester $I)
+    {
+        $this->installModule($I, 'organs');
+    }
 }
