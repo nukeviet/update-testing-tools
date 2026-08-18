@@ -73,4 +73,15 @@ class SetModuleCest
     {
         $this->installModule($I, 'download');
     }
+
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install-module-laws
+     * @group all
+     */
+    public function installModuleLaws(AcceptanceTester $I)
+    {
+        $this->installModule($I, 'laws');
+    }
 }

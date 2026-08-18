@@ -79,34 +79,65 @@ VERSIONS_NAME=(
 LASTESTVERSION="nukeviet4.6"
 LASTESTUPDATEVERSION="to-4.6.01"
 
+NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
+UPDATEREPOURL="https://github.com/nukeviet/update.git" # Repo chứa gói cập nhật để test
+
+# Chuẩn bị một thư mục làm việc sạch từ một repo git
+# prepare_repo <thư mục> <git remote url> <nhánh hoặc commit>
+# Nếu thư mục đã tồn tại nhưng không phải repo git hoặc remote url không khớp
+# thì xóa thư mục đó đi và clone lại
+prepare_repo() {
+  local dir="$1"
+  local url="$2"
+  local ref="$3"
+  local current_url=""
+
+  if [ -d "$dir/.git" ]; then
+    current_url="$(git -C "$dir" config --get remote.origin.url 2>/dev/null)"
+    if [ "$current_url" != "$url" ]; then
+      echo "Remote url of $dir is \"$current_url\", expected \"$url\". Removing..."
+      rm -rf "$dir"
+    fi
+  elif [ -d "$dir" ]; then
+    echo "$dir is not a git repository. Removing..."
+    rm -rf "$dir"
+  fi
+
+  if [ ! -d "$dir" ]; then
+    echo "Cloning $url into $dir..."
+    mkdir -p "$dir"
+    git clone "$url" "$dir"
+    code=$?
+    if [[ $code -gt 0 ]]; then
+      echo "Git clone $url failed with code: $code"
+      read -p "Error! Press any key to continue..."
+      exit $code
+    fi
+  else
+    git -C "$dir" reset --hard HEAD
+    git -C "$dir" clean -dfx
+    git -C "$dir" fetch --all --prune
+  fi
+
+  git -C "$dir" checkout "$ref"
+  code=$?
+  if [[ $code -gt 0 ]]; then
+    echo "Git checkout $ref failed with code: $code"
+    read -p "Error! Press any key to continue..."
+    exit $code
+  fi
+
+  # Chỉ pull khi đang ở trên một nhánh, checkout theo commit id sẽ ở trạng thái detached HEAD
+  if git -C "$dir" symbolic-ref -q HEAD >/dev/null; then
+    git -C "$dir" pull
+  fi
+}
+
 # Lấy NukeViet về thư mục src
-if [ ! -d "$DIR_PATH/src" ]; then
-  echo "Cloning NukeViet repository..."
-  mkdir -p "$DIR_PATH/src"
-  cd "$DIR_PATH/src"
-  git clone https://github.com/nukeviet/nukeviet.git .
-else
-  cd "$DIR_PATH/src"
-  git reset --hard HEAD
-  git clean -dfx
-  git checkout "$LASTESTVERSION"
-  git pull
-fi
+prepare_repo "$DIR_PATH/src" "$NUKEVIETREPOURL" "$LASTESTVERSION"
 
 # Lấy gói cập nhật về thư mục update
-if [ ! -d "$DIR_PATH/update" ]; then
-  echo "Cloning NukeViet update repository..."
-  mkdir -p "$DIR_PATH/update"
-  cd "$DIR_PATH/update"
-  git clone https://github.com/nukeviet/update.git .
-  git checkout "$LASTESTUPDATEVERSION"
-else
-  cd "$DIR_PATH/update"
-  git reset --hard HEAD
-  git clean -dfx
-  git checkout "$LASTESTUPDATEVERSION"
-  git pull
-fi
+prepare_repo "$DIR_PATH/update" "$UPDATEREPOURL" "$LASTESTUPDATEVERSION"
 
 for i in "${!VERSIONS[@]}"; do
   commitid="${VERSIONS[$i]}"

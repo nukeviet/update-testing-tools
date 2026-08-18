@@ -75,7 +75,7 @@ if ! kill -0 $SELENIUM_PID 2>/dev/null; then
 fi
 
 VERSIONS=(
-  "d6bb369abcaffb9d3e7165dda2bdd50b5e8d2ed2" # 4.5.03
+  "231a2e9dbcc455c9877f11be95aac389ba25119a" # 4.5.03
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
@@ -83,12 +83,12 @@ VERSIONS_NAME=(
   # "latest"
 )
 LASTESTNUKEVIETVERSION="nukeviet4.6" # Nhánh chứa bản NukeViet mới nhất để test cập nhật
-LASTESTMODULEVERSION="develop" # Nhánh chứa bản module mới nhất để test cập nhật
-LASTESTUPDATEVERSION="to-4.6.00" # Nhánh update module mới nhất để test cập nhật
+LASTESTMODULEVERSION="master" # Nhánh chứa bản module mới nhất để test cập nhật
+LASTESTUPDATEVERSION="to-4.6.01" # Nhánh update module mới nhất để test cập nhật
 
 NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
-MODULEREPOURL="https://github.com/nukeviet/module-download.git" # Repo chứa module để test
-UPDATEREPOURL="https://github.com/nukeviet/module-download.git" # Repo chứa gói cập nhật để test
+MODULEREPOURL="https://github.com/nukeviet/module-laws.git" # Repo chứa module để test
+UPDATEREPOURL="https://github.com/nukeviet/module-laws.git" # Repo chứa gói cập nhật để test
 
 # Chuẩn bị một thư mục làm việc sạch từ một repo git
 # prepare_repo <thư mục> <git remote url> <nhánh hoặc commit>
@@ -140,6 +140,7 @@ prepare_repo() {
     git -C "$dir" pull
   fi
 }
+
 
 # Chuẩn bị thư mục src sạch với bản NukeViet mới nhất
 prepare_repo "$DIR_PATH/src" "$NUKEVIETREPOURL" "$LASTESTNUKEVIETVERSION"
@@ -202,7 +203,7 @@ for i in "${!VERSIONS[@]}"; do
 
   # Cài đặt module
   echo "Begin module installation..."
-  php $DIR_PATH/vendor/bin/codecept run -g install-module-download
+  php $DIR_PATH/vendor/bin/codecept run -g install-module-laws
 
   # Test cập nhật phiên bản module
   cp -rf "$DIR_PATH/update/install" "$DIR_PATH/src/"
@@ -216,14 +217,14 @@ for i in "${!VERSIONS[@]}"; do
   fi
 
   # Kiểm tra lại sau cập nhật
-  # echo "Begin verify testing..."
-  # php $DIR_PATH/vendor/bin/codecept run -g verify4.6
-  # code=$?
-  # if [[ $code -gt 0 ]]; then
-  #   echo "Tests failed with code: $code on version $version_name"
-  #   read -p "Error! Press any key to continue..."
-  #   exit $code
-  # fi
+  echo "Begin verify testing..."
+  php $DIR_PATH/vendor/bin/codecept run -g verify-laws
+  code=$?
+  if [[ $code -gt 0 ]]; then
+    echo "Tests failed with code: $code on version $version_name"
+    read -p "Error! Press any key to continue..."
+    exit $code
+  fi
 
   echo "Tests passed on version $version_name"
 done
