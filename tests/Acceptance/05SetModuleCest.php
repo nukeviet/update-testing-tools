@@ -95,4 +95,15 @@ class SetModuleCest
     {
         $this->installModule($I, 'organs');
     }
+
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install-module-videoclips
+     * @group all
+     */
+    public function installModuleVideoclips(AcceptanceTester $I)
+    {
+        $this->installModule($I, 'videoclips');
+    }
 }
