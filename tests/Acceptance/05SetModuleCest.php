@@ -106,4 +106,15 @@ class SetModuleCest
     {
         $this->installModule($I, 'videoclips');
     }
+
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install-module-wallet
+     * @group all
+     */
+    public function installModuleWallet(AcceptanceTester $I)
+    {
+        $this->installModule($I, 'wallet');
+    }
 }

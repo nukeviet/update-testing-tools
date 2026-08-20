@@ -55,17 +55,21 @@ class UpdateCest
         $I->waitForText('Bên dưới là danh sách các công việc sẽ thực hiện', 5);
         $I->click('Bước kế tiếp');
 
-        // Click bắt đầu cập nhật CSDL
-        $I->waitForText('Bắt đầu', 5);
-        $I->click('Bắt đầu');
+        // Click bắt đầu cập nhật CSDL. Cần cuộn đến thẻ a có text "Bắt đầu"
+        $link = '//a[normalize-space(.)="Bắt đầu"]';
+        $I->waitForElementVisible($link, 5);
+        $I->scrollTo($link);
+        $I->click($link);
 
         // Click sang bước thực hiện di chuyển file
         $I->waitForText('Bước kế tiếp', 60);
         $I->click('Bước kế tiếp');
 
-        // Click bắt đầu di chuyển file
-        $I->waitForText('Nhấp vào đây để tiếp tục', 5);
-        $I->click('Nhấp vào đây để tiếp tục');
+        // Click bắt đầu di chuyển file. Cần cuộn đến thẻ a có text "Nhấp vào đây để tiếp tục"
+        $link = '//a[normalize-space(.)="Nhấp vào đây để tiếp tục"]';
+        $I->waitForElementVisible($link, 5);
+        $I->scrollTo($link);
+        $I->click($link);
 
         // Click sang bước cuối cùng
         $I->waitForText('Bước kế tiếp', 60);
