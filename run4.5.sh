@@ -79,6 +79,7 @@ VERSIONS=(
   "98fa26decb267c5899d5ead4b74b24df3322f50c" # 4.5.07
   "a91103d349c2c9405ba6a05df106dfadd5b46b5d" # 4.5.08
   "47b5383017725354a824db30f754def60109f5a5" # 4.5.09
+  "d4a6915f1b259918541ed2eec7bba008575cedcc" # 4.5.10
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
@@ -92,10 +93,11 @@ VERSIONS_NAME=(
   "4.5.07"
   "4.5.08"
   "4.5.09"
+  "4.5.10"
   "latest"
 )
 LASTESTVERSION="nukeviet4.5"
-LASTESTUPDATEVERSION="to-4.5.10"
+LASTESTUPDATEVERSION="to-4.5.11"
 
 NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
 UPDATEREPOURL="https://github.com/nukeviet/update.git" # Repo chứa gói cập nhật để test
@@ -137,7 +139,14 @@ prepare_repo() {
     git -C "$dir" fetch --all --prune
   fi
 
-  git -C "$dir" checkout "$ref"
+  # Ưu tiên nhánh: nếu repo có cả tag lẫn nhánh trùng tên thì git checkout <tên>
+  # sẽ chọn tag (detached HEAD), nên phải chỉ rõ nhánh lấy từ remote
+  if git -C "$dir" show-ref --verify --quiet "refs/remotes/origin/$ref"; then
+    echo "Checking out branch $ref from origin/$ref..."
+    git -C "$dir" checkout -B "$ref" "refs/remotes/origin/$ref"
+  else
+    git -C "$dir" checkout "$ref"
+  fi
   code=$?
   if [[ $code -gt 0 ]]; then
     echo "Git checkout $ref failed with code: $code"
@@ -145,9 +154,9 @@ prepare_repo() {
     exit $code
   fi
 
-  # Chỉ pull khi đang ở trên một nhánh, checkout theo commit id sẽ ở trạng thái detached HEAD
+  # Chỉ pull khi đang ở trên một nhánh, checkout theo tag/commit id sẽ ở trạng thái detached HEAD
   if git -C "$dir" symbolic-ref -q HEAD >/dev/null; then
-    git -C "$dir" pull
+    git -C "$dir" pull --ff-only
   fi
 }
 

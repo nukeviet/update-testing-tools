@@ -127,7 +127,14 @@ prepare_repo() {
     git -C "$dir" fetch --all --prune
   fi
 
-  git -C "$dir" checkout "$ref"
+  # Ưu tiên nhánh: nếu repo có cả tag lẫn nhánh trùng tên thì git checkout <tên>
+  # sẽ chọn tag (detached HEAD), nên phải chỉ rõ nhánh lấy từ remote
+  if git -C "$dir" show-ref --verify --quiet "refs/remotes/origin/$ref"; then
+    echo "Checking out branch $ref from origin/$ref..."
+    git -C "$dir" checkout -B "$ref" "refs/remotes/origin/$ref"
+  else
+    git -C "$dir" checkout "$ref"
+  fi
   code=$?
   if [[ $code -gt 0 ]]; then
     echo "Git checkout $ref failed with code: $code"
@@ -135,9 +142,9 @@ prepare_repo() {
     exit $code
   fi
 
-  # Chỉ pull khi đang ở trên một nhánh, checkout theo commit id sẽ ở trạng thái detached HEAD
+  # Chỉ pull khi đang ở trên một nhánh, checkout theo tag/commit id sẽ ở trạng thái detached HEAD
   if git -C "$dir" symbolic-ref -q HEAD >/dev/null; then
-    git -C "$dir" pull
+    git -C "$dir" pull --ff-only
   fi
 }
 
