@@ -75,6 +75,14 @@ class UpdateCest
         $I->waitForText('Bước kế tiếp', 60);
         $I->click('Bước kế tiếp');
 
+        // Nếu có màn hình ghi chú trung gian thì ấn bước kế tiếp không thì đi tiếp tới bước phía dưới
+        try {
+            $I->waitForText('Các bước thực hiện đã hoàn tất, bây giờ bạn hãy đọc và làm theo một số lưu ý sau', 5);
+            $I->click('Bước kế tiếp');
+        } catch (\Throwable $e) {
+            // Không có màn hình ghi chú này, bỏ qua
+        }
+
         /**
          * Nếu có những dòng chữ này thì thành công, xóa gói cập nhật
          * Nếu không thì bắt đầu quy trình reUpdate
