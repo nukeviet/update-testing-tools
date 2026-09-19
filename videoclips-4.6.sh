@@ -90,6 +90,25 @@ NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để
 MODULEREPOURL="https://github.com/nukeviet/module-videoclips.git" # Repo chứa module để test
 UPDATEREPOURL="https://github.com/nukeviet/module-videoclips.git" # Repo chứa gói cập nhật để test
 
+# Cho phép truyền tham số đầu tiên là tên phiên bản để chạy từ đó trở đi, ví dụ: bash videoclips-4.6.sh 4.3.00
+START_VERSION="$1"
+START_INDEX=0
+if [ -n "$START_VERSION" ]; then
+  FOUND_START="no"
+  for i in "${!VERSIONS_NAME[@]}"; do
+    if [ "${VERSIONS_NAME[$i]}" == "$START_VERSION" ]; then
+      START_INDEX=$i
+      FOUND_START="yes"
+      break
+    fi
+  done
+  if [ "$FOUND_START" != "yes" ]; then
+    echo "Version \"$START_VERSION\" not found in VERSIONS_NAME."
+    read -p "Error! Press any key to continue..."
+    exit 1
+  fi
+fi
+
 # Chuẩn bị một thư mục làm việc sạch từ một repo git
 # prepare_repo <thư mục> <git remote url> <nhánh hoặc commit>
 # Nếu thư mục đã tồn tại nhưng không phải repo git hoặc remote url không khớp
@@ -159,6 +178,10 @@ prepare_repo "$DIR_PATH/src-module" "$MODULEREPOURL" "$LASTESTMODULEVERSION"
 prepare_repo "$DIR_PATH/update" "$UPDATEREPOURL" "$LASTESTUPDATEVERSION"
 
 for i in "${!VERSIONS[@]}"; do
+  if [ "$i" -lt "$START_INDEX" ]; then
+    continue
+  fi
+
   commitid="${VERSIONS[$i]}"
   version_name="${VERSIONS_NAME[$i]}"
 

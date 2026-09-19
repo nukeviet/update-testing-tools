@@ -80,6 +80,7 @@ VERSIONS=(
   "a91103d349c2c9405ba6a05df106dfadd5b46b5d" # 4.5.08
   "47b5383017725354a824db30f754def60109f5a5" # 4.5.09
   "d4a6915f1b259918541ed2eec7bba008575cedcc" # 4.5.10
+  "a87b4af574bc481d4ce82110f0f1ea3c85d345b9" # 4.5.11
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
@@ -94,13 +95,33 @@ VERSIONS_NAME=(
   "4.5.08"
   "4.5.09"
   "4.5.10"
+  "4.5.11"
   "latest"
 )
 LASTESTVERSION="nukeviet4.5"
-LASTESTUPDATEVERSION="to-4.5.11"
+LASTESTUPDATEVERSION="to-4.5.12"
 
 NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
 UPDATEREPOURL="https://github.com/nukeviet/update.git" # Repo chứa gói cập nhật để test
+
+# Cho phép truyền tham số đầu tiên là tên phiên bản để chạy từ đó trở đi, ví dụ: bash run4.5.sh 4.5.09
+START_VERSION="$1"
+START_INDEX=0
+if [ -n "$START_VERSION" ]; then
+  FOUND_START="no"
+  for i in "${!VERSIONS_NAME[@]}"; do
+    if [ "${VERSIONS_NAME[$i]}" == "$START_VERSION" ]; then
+      START_INDEX=$i
+      FOUND_START="yes"
+      break
+    fi
+  done
+  if [ "$FOUND_START" != "yes" ]; then
+    echo "Version \"$START_VERSION\" not found in VERSIONS_NAME."
+    read -p "Error! Press any key to continue..."
+    exit 1
+  fi
+fi
 
 # Chuẩn bị một thư mục làm việc sạch từ một repo git
 # prepare_repo <thư mục> <git remote url> <nhánh hoặc commit>
@@ -167,6 +188,10 @@ prepare_repo "$DIR_PATH/src" "$NUKEVIETREPOURL" "$LASTESTVERSION"
 prepare_repo "$DIR_PATH/update" "$UPDATEREPOURL" "$LASTESTUPDATEVERSION"
 
 for i in "${!VERSIONS[@]}"; do
+  if [ "$i" -lt "$START_INDEX" ]; then
+    continue
+  fi
+
   commitid="${VERSIONS[$i]}"
   version_name="${VERSIONS_NAME[$i]}"
 
