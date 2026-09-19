@@ -70,14 +70,16 @@ fi
 
 VERSIONS=(
   "f47de5cd6577d0d49449754be9bafe9081be4981" # 4.6.00
+  "ef90780e50d54384019a36aa2bcf9fd58776f698" # 4.6.01
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
   "4.6.00"
+  "4.6.01"
   "latest"
 )
 LASTESTVERSION="nukeviet4.6"
-LASTESTUPDATEVERSION="to-4.6.01"
+LASTESTUPDATEVERSION="to-4.6.02"
 
 NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
 UPDATEREPOURL="https://github.com/nukeviet/update.git" # Repo chứa gói cập nhật để test
