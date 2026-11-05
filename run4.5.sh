@@ -82,6 +82,7 @@ VERSIONS=(
   "d4a6915f1b259918541ed2eec7bba008575cedcc" # 4.5.10
   "a87b4af574bc481d4ce82110f0f1ea3c85d345b9" # 4.5.11
   "eb654c3f3896d6fe517b8f43ff0d20f80d94f05e" # 4.5.12
+  "570ce84ff980efde57d48f1a02df11d37eaba7da" # 4.5.13
   # "head"                                     # latest
 )
 VERSIONS_NAME=(
@@ -98,10 +99,11 @@ VERSIONS_NAME=(
   "4.5.10"
   "4.5.11"
   "4.5.12"
+  "4.5.13"
   "latest"
 )
 LASTESTVERSION="nukeviet4.5"
-LASTESTUPDATEVERSION="to-4.5.13"
+LASTESTUPDATEVERSION="to-4.5.14"
 
 NUKEVIETREPOURL="https://github.com/nukeviet/nukeviet.git" # Repo NukeViet để test
 UPDATEREPOURL="https://github.com/nukeviet/update.git" # Repo chứa gói cập nhật để test
